@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  if (window.__codexZhOverlay?.version === 6) {
+  if (window.__codexZhOverlay?.version === 8) {
     window.__codexZhOverlay.scan();
     return;
   }
@@ -227,6 +227,7 @@
     ["Browser", "浏览器"],
     ["Coding", "编程"],
     ["Hooks", "钩子"],
+    ["Git", "Git 版本控制"],
     ["Environments", "环境"],
     ["Worktrees", "工作树"],
     ["Default permissions", "默认权限"],
@@ -318,9 +319,7 @@
     ["Working…", "正在处理…"],
     ["Working...", "正在处理..."],
     ["Worked for a while", "已处理一段时间"],
-    ["Queued", "已排队"],
     ["Need attention", "需要注意"],
-    ["Done", "已完成"],
     ["Stopped", "已停止"],
     ["Error", "错误"],
     ["Unavailable", "不可用"],
@@ -708,7 +707,6 @@
     "[role='textbox']",
     "[data-codex-zh-skip]",
     "[data-message-author-role]",
-    "article",
   ].join(",");
 
   let applying = false;
@@ -819,7 +817,7 @@
     });
 
     window.__codexZhOverlay = {
-      version: 6,
+      version: 8,
       scan: () => scan(),
       stop: () => {
         observer.disconnect();
