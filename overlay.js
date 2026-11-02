@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  if (window.__codexZhOverlay?.version === 8) {
+  if (window.__codexZhOverlay?.version === 9) {
     window.__codexZhOverlay.scan();
     return;
   }
@@ -744,7 +744,6 @@
       "aria-label",
       "aria-description",
       "aria-placeholder",
-      "data-placeholder",
       "placeholder",
       "title",
       "alt",
@@ -799,8 +798,6 @@
     }
   });
 
-  let scanInterval = null;
-
   function start() {
     const root = document.documentElement;
     if (!root) {
@@ -817,19 +814,25 @@
     });
 
     window.__codexZhOverlay = {
-      version: 8,
+      version: 9,
       scan: () => scan(),
       stop: () => {
         observer.disconnect();
-        if (scanInterval !== null) {
-          clearInterval(scanInterval);
-          scanInterval = null;
-        }
       },
     };
 
+    if (!document.querySelector("style[data-codex-zh-overlay]")) {
+      const style = document.createElement("style");
+      style.dataset.codexZhOverlay = "";
+      style.textContent = `
+        p.placeholder[data-placeholder="Work with ChatGPT"]::before {
+          content: "与 ChatGPT 协作" !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
     scan(root);
-    scanInterval = setInterval(() => scan(), 2000);
   }
 
   start();
