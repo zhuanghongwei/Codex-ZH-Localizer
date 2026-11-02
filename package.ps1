@@ -25,6 +25,7 @@ try {
         "CHANGELOG.md",
         "README.md",
         "VERSION",
+        "gui.ps1",
         "install-shortcut.ps1",
         "overlay.js",
         "restore-localizer.ps1",
