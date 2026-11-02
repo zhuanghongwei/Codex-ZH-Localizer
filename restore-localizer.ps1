@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 $stateDir = Join-Path $env:LOCALAPPDATA "CodexChineseOverlay"
 $pidFile = Join-Path $stateDir "translator.pid"
 

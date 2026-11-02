@@ -4,6 +4,8 @@
 
 它通过 Codex 自带的本机 Chromium 调试接口注入翻译表，替换常见界面文字，不会修改 Codex 安装文件，也不会把界面内容发送到网络。
 
+当前版本：`1.0.0`
+
 ## 功能
 
 - 汉化导航、项目、设置、对话框等常见界面文字
@@ -25,6 +27,12 @@
 2. 双击 `启动 Codex 中文外挂.cmd`。
 3. Codex 会自动重启并加载中文界面。
 4. 如需恢复原界面，双击 `恢复 Codex 原界面.cmd`。
+
+如需在桌面创建启动快捷方式，可在 PowerShell 中运行：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install-shortcut.ps1
+```
 
 运行日志和进程信息保存在：
 
