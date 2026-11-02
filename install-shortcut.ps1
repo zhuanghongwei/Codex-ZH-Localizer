@@ -5,7 +5,7 @@
 
 $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$launcher = Join-Path $scriptDir "gui.ps1"
+$launcher = Join-Path $scriptDir "CodexZH.exe"
 
 if (-not (Test-Path -LiteralPath $launcher)) {
     throw "Launcher was not found. Keep the complete tool folder together."
@@ -22,10 +22,10 @@ if (-not (Test-Path -LiteralPath $Destination)) {
 $shortcutPath = Join-Path $Destination "$ShortcutName.lnk"
 $shell = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut($shortcutPath)
-$shortcut.TargetPath = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe"
-$shortcut.Arguments = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$launcher`""
+$shortcut.TargetPath = $launcher
+$shortcut.Arguments = ""
 $shortcut.WorkingDirectory = $scriptDir
-$shortcut.IconLocation = Join-Path $env:SystemRoot "System32\WindowsPowerShell\v1.0\powershell.exe,0"
+$shortcut.IconLocation = "$launcher,0"
 $shortcut.Description = "打开 Codex 中文外挂控制面板"
 $shortcut.WindowStyle = 1
 $shortcut.Save()

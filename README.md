@@ -4,7 +4,7 @@
 
 它通过 Codex 自带的本机 Chromium 调试接口注入翻译表，替换常见界面文字，不会修改 Codex 安装文件，也不会把界面内容发送到网络。
 
-当前版本：`1.1.3`
+当前版本：`1.2.0`
 
 ## 功能
 
@@ -20,11 +20,12 @@
 - 已安装并至少启动过一次 Codex 桌面端
 - Node.js 已安装并可从命令行运行（`node --version` 应能输出版本号）
 - PowerShell 5.1 或更高版本
+- Windows 自带的 .NET Framework 4.8（运行 `CodexZH.exe`）
 
 ## 使用方法
 
 1. 下载或克隆整个仓库，不要只复制其中一个脚本。
-2. 双击 `启动 Codex 中文外挂.cmd`，或使用桌面快捷方式。
+2. 双击桌面快捷方式，或 `CodexZH.exe`。
 3. 在图形界面中点击 `启动汉化`，Codex 会自动重启并加载中文界面。
 4. 如需恢复原界面，在同一个窗口中点击 `恢复原界面`。
 
@@ -38,6 +39,14 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install-shortcut.ps1
 
 ```text
 %LOCALAPPDATA%\CodexChineseOverlay
+```
+
+## 从源码构建
+
+发布包已经包含 `CodexZH.exe`。如需重新构建控制面板，可运行：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 ```
 
 ## 自定义翻译

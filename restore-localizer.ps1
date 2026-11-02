@@ -1,6 +1,20 @@
-﻿$ErrorActionPreference = "Stop"
+﻿param(
+    [switch]$SelfTest
+)
+
+$ErrorActionPreference = "Stop"
 $stateDir = Join-Path $env:LOCALAPPDATA "CodexChineseOverlay"
 $pidFile = Join-Path $stateDir "translator.pid"
+$portFile = Join-Path $stateDir "translator.port"
+
+if ($SelfTest) {
+    [PSCustomObject]@{
+        Status = "OK"
+        HelperPidFile = $pidFile
+        HelperPortFile = $portFile
+    } | Format-List
+    exit 0
+}
 
 if (Test-Path $pidFile) {
     $translatorPid = 0
@@ -10,6 +24,8 @@ if (Test-Path $pidFile) {
     }
     Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
 }
+
+Remove-Item -LiteralPath $portFile -Force -ErrorAction SilentlyContinue
 
 $codexProcess = Get-Process ChatGPT -ErrorAction SilentlyContinue |
     Where-Object { $_.Path } |

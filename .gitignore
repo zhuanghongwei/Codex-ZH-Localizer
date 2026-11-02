@@ -10,3 +10,7 @@ desktop.ini
 # Local editor files
 .vscode/
 .idea/
+
+# Local build and packaging outputs
+CodexZH.exe
+dist/

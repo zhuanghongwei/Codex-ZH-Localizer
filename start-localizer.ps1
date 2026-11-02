@@ -1,5 +1,6 @@
 ﻿param(
-    [int]$Port = 9337
+    [int]$Port = 9337,
+    [switch]$SelfTest
 )
 
 $ErrorActionPreference = "Stop"
@@ -7,19 +8,9 @@ $stateDir = Join-Path $env:LOCALAPPDATA "CodexChineseOverlay"
 $pidFile = Join-Path $stateDir "translator.pid"
 $stdoutLog = Join-Path $stateDir "translator.out.log"
 $stderrLog = Join-Path $stateDir "translator.err.log"
+$portFile = Join-Path $stateDir "translator.port"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $translator = Join-Path $scriptDir "translator.mjs"
-
-New-Item -ItemType Directory -Force -Path $stateDir | Out-Null
-
-if (Test-Path $pidFile) {
-    $oldPid = 0
-    [void][int]::TryParse((Get-Content $pidFile -ErrorAction SilentlyContinue), [ref]$oldPid)
-    if ($oldPid -gt 0) {
-        Stop-Process -Id $oldPid -Force -ErrorAction SilentlyContinue
-    }
-    Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
-}
 
 $node = (Get-Command node.exe -ErrorAction SilentlyContinue).Source
 if (-not $node) {
@@ -40,6 +31,32 @@ if (-not $codexExe) {
 
 if (-not $codexExe -or -not (Test-Path -LiteralPath $codexExe)) {
     throw "Codex was not found. Open Codex once, then try again."
+}
+
+if (-not (Test-Path -LiteralPath $translator)) {
+    throw "translator.mjs was not found."
+}
+
+if ($SelfTest) {
+    [PSCustomObject]@{
+        Status = "OK"
+        Node = $node
+        Codex = $codexExe
+        Translator = $translator
+        Port = $Port
+    } | Format-List
+    exit 0
+}
+
+New-Item -ItemType Directory -Force -Path $stateDir | Out-Null
+
+if (Test-Path $pidFile) {
+    $oldPid = 0
+    [void][int]::TryParse((Get-Content $pidFile -ErrorAction SilentlyContinue), [ref]$oldPid)
+    if ($oldPid -gt 0) {
+        Stop-Process -Id $oldPid -Force -ErrorAction SilentlyContinue
+    }
+    Remove-Item -LiteralPath $pidFile -Force -ErrorAction SilentlyContinue
 }
 
 $selectedPort = $Port
@@ -75,6 +92,7 @@ $translatorProcess = Start-Process -FilePath $node -ArgumentList @(
 ) -WindowStyle Hidden -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog -PassThru
 
 Set-Content -LiteralPath $pidFile -Value $translatorProcess.Id -Encoding ascii
+Set-Content -LiteralPath $portFile -Value $selectedPort -Encoding ascii
 Write-Host "Codex restarted with the Chinese localizer enabled."
 Write-Host "Log directory: $stateDir"
 Write-Host "Run restore-localizer.cmd to restore the original interface."

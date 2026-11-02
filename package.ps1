@@ -14,6 +14,11 @@ if (-not $OutputDirectory) {
 $outputPath = [IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Force -Path $outputPath | Out-Null
 
+& (Join-Path $scriptDir "build.ps1") -OutputPath (Join-Path $scriptDir "CodexZH.exe") | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    throw "Launcher build failed."
+}
+
 $stagingRoot = Join-Path ([IO.Path]::GetTempPath()) "codex-zh-package-$([Guid]::NewGuid().ToString('N'))"
 $stagingFolder = Join-Path $stagingRoot "Codex-ZH-Localizer"
 
@@ -22,13 +27,15 @@ try {
 
     $files = @(
         ".gitignore",
+        "build.ps1",
         "CHANGELOG.md",
+        "CodexZH.exe",
         "README.md",
         "VERSION",
-        "gui.ps1",
         "install-shortcut.ps1",
         "overlay.js",
         "restore-localizer.ps1",
+        "src\Launcher.cs",
         "start-localizer.ps1",
         "translator.mjs",
         "启动 Codex 中文外挂.cmd",
@@ -41,7 +48,9 @@ try {
         if (-not (Test-Path -LiteralPath $source)) {
             throw "Distribution file was not found: $relativePath"
         }
-        Copy-Item -LiteralPath $source -Destination $stagingFolder
+        $destination = Join-Path $stagingFolder $relativePath
+        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination) | Out-Null
+        Copy-Item -LiteralPath $source -Destination $destination
     }
 
     $zipPath = Join-Path $outputPath "$packageName.zip"
