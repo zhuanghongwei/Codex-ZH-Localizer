@@ -1,10 +1,12 @@
 (() => {
   "use strict";
 
-  if (window.__codexZhOverlay?.version === 1) {
+  if (window.__codexZhOverlay?.version === 2) {
     window.__codexZhOverlay.scan();
     return;
   }
+
+  window.__codexZhOverlay?.stop?.();
 
   const exact = new Map([
     ["ChatGPT Work", "ChatGPT 工作"],
@@ -214,6 +216,62 @@
     ["All chats", "所有对话"],
     ["No results", "没有结果"],
     ["No results found", "未找到结果"],
+    ["Back to app", "返回应用"],
+    ["Personal", "个人"],
+    ["Archived chats", "已归档对话"],
+    ["Storage", "存储"],
+    ["Configuration", "配置"],
+    ["Mini & Pets", "迷你与宠物"],
+    ["Integrations", "集成"],
+    ["Computer use", "计算机使用"],
+    ["Browser", "浏览器"],
+    ["Coding", "编程"],
+    ["Hooks", "钩子"],
+    ["Environments", "环境"],
+    ["Worktrees", "工作树"],
+    ["Default permissions", "默认权限"],
+    [
+      "By default, ChatGPT can read and edit files in its workspace. It can ask for additional access when needed",
+      "默认情况下，ChatGPT 可以读取并编辑其工作区中的文件。需要时可以申请额外访问权限。",
+    ],
+    ["Full access", "完全访问"],
+    [
+      "When ChatGPT runs with full access, it can edit any file on your computer and run commands with network, without your approval. This significantly increases the risk of data loss, leaks, or unexpected behavior.",
+      "启用完全访问后，ChatGPT 可以编辑你电脑上的任何文件，并在无需批准的情况下运行联网命令。这会显著增加数据丢失、泄漏或意外行为的风险。",
+    ],
+    ["more about elevated risks.", "了解有关更高风险的更多信息。"],
+    ["about elevated risks.", "了解有关更高风险的更多信息。"],
+    ["Projectless chat folder", "无项目对话文件夹"],
+    [
+      "The location where chats started outside of projects store their data by default.",
+      "在项目之外开始的对话默认在此位置存储数据。",
+    ],
+    ["Change", "更改"],
+    ["Default file open destination", "默认文件打开位置"],
+    ["Where files and folders open by default", "文件和文件夹默认打开的位置"],
+    ["Integrated terminal shell", "集成终端 Shell"],
+    [
+      "Choose which shell opens in the integrated terminal.",
+      "选择集成终端中使用的 Shell。",
+    ],
+    ["Language for the app UI", "应用界面语言"],
+    ["Confirm before closing a window", "关闭窗口前确认"],
+    [
+      "Warn when a tab-close shortcut would close the window",
+      "使用标签页关闭快捷键会关闭窗口时发出警告",
+    ],
+    ["Close shortcut only", "仅关闭快捷键时"],
+    ["Full view by default", "默认使用完整视图"],
+    [
+      "Start new chats with Chat and content in a single tab strip",
+      "在新对话中将“聊天”和内容显示在同一标签栏中",
+    ],
+    ["Bottom panel", "底部面板"],
+    [
+      "Show the bottom panel control in the app header",
+      "在应用顶部显示底部面板控制项",
+    ],
+    ["Automatically archive inactive chats", "自动归档不活跃对话"],
   ]);
 
   const patterns = [
@@ -322,6 +380,8 @@
     }
   });
 
+  let scanInterval = null;
+
   function start() {
     const root = document.documentElement;
     if (!root) {
@@ -338,13 +398,19 @@
     });
 
     window.__codexZhOverlay = {
-      version: 1,
+      version: 2,
       scan: () => scan(),
-      stop: () => observer.disconnect(),
+      stop: () => {
+        observer.disconnect();
+        if (scanInterval !== null) {
+          clearInterval(scanInterval);
+          scanInterval = null;
+        }
+      },
     };
 
     scan(root);
-    setInterval(() => scan(), 2000);
+    scanInterval = setInterval(() => scan(), 2000);
   }
 
   start();
